@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\Album.png" />
+    <None Remove="Properties\Favourite.png" />
+    <None Remove="Properties\ListRepeat.png" />
+    <None Remove="Properties\Music.png" />
+    <None Remove="Properties\Musician.png" />
+    <None Remove="Properties\OrderPlay.png" />
+    <None Remove="Properties\Pause.png" />
+    <None Remove="Properties\Play.png" />
+    <None Remove="Properties\Playlist.png" />
+    <None Remove="Properties\Scale.png" />
+    <None Remove="Properties\Search.png" />
+    <None Remove="Properties\SingleRepeat.png" />
+    <None Remove="Properties\SkipBack.png" />
+    <None Remove="Properties\SkipForward.png" />
+    <None Remove="Properties\volume-down-line.png" />
+    <None Remove="Properties\volume-mute-line.png" />
+    <None Remove="Properties\Volume.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Properties\ListRepeat.png" />
+    <Resource Include="Properties\SingleRepeat.png" />
+    <Resource Include="Properties\Pause.png" />
+    <Resource Include="Properties\Play.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Properties\Album.png" />
+    <Resource Include="Properties\Favourite.png" />
+    <Resource Include="Properties\Music.png" />
+    <Resource Include="Properties\Musician.png" />
+    <Resource Include="Properties\OrderPlay.png" />
+    <Resource Include="Properties\Playlist.png" />
+    <Resource Include="Properties\Scale.png" />
+    <Resource Include="Properties\Search.png" />
+    <Resource Include="Properties\SkipBack.png" />
+    <Resource Include="Properties\SkipForward.png" />
+    <Resource Include="Properties\volume-down-line.png" />
+    <Resource Include="Properties\volume-mute-line.png" />
+    <Resource Include="Properties\Volume.png" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,302 @@
+﻿<Window x:Class="LightPlayer.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LightPlayer.Views"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:b="clr-namespace:LightPlayer.Behaviours"
+        xmlns:cvt="clr-namespace:LightPlayer.Converters"
+        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:LightPlayer.ViewModels"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="MainWindow" Height="700" Width="1000"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+        x:Name="mainWindow">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Style.Setters>
+                <Setter Property="WindowChrome.WindowChrome">
+                    <Setter.Value>
+                        <WindowChrome CaptionHeight="30"
+                                      UseAeroCaptionButtons="True"
+                                      GlassFrameThickness="-1"
+                                      NonClientFrameEdges="None"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Window">
+                            <Grid>
+                                <Grid x:Name="contentTemplate">
+                                    <AdornerDecorator>
+                                        <ContentPresenter/>
+                                    </AdornerDecorator>
+                                </Grid>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="WindowState" Value="Maximized">
+                                    <Setter TargetName="contentTemplate" Property="Margin" Value="8" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+    </Window.Style>
+    <Window.Resources>
+        <cvt:VolumeValueToStringConverter x:Key="vvts"/>
+        <cvt:VolumeConverter x:Key="vc"/>
+        <cvt:PathToBitmapSource x:Key="ptbs"/>
+        <cvt:VolumeValueToImageSourceConverter x:Key="vvtis"/>
+        <cvt:PlayModeToImageSourceConverter x:Key="pmtis"/>
+    </Window.Resources>
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom"
+              Height="110"
+              Background="WhiteSmoke">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Separator VerticalAlignment="Top" Margin="0"
+                       Grid.ColumnSpan="3"/>
+            <DockPanel Grid.ColumnSpan="3"
+                       Grid.Row="2">
+                <TextBlock DockPanel.Dock="Left"
+                           Text="{Binding Position, StringFormat=mm\\:ss}"
+                           VerticalAlignment="Center"
+                           Margin="10,0,0,5"/>
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding Length, StringFormat=mm\\:ss}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,5"/>
+                <Slider Margin="5,0,5,5" Value="{Binding Progress}"
+                        IsEnabled="{Binding IsPlayable}"
+                        DockPanel.Dock="Bottom"
+                        Foreground="DimGray"
+                        Background="DarkGray">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewMouseDown">
+                            <i:InvokeCommandAction Command="{Binding SliderMouseLeftButtonDownCommand}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="PreviewMouseUp">
+                            <i:InvokeCommandAction Command="{Binding SliderMouseLeftButtonUpCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Slider>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Grid.Row="1" Grid.Column="0">
+                <Image Source="{Binding Image}" Width="60" Height="60" Margin="10,0"/>
+                <StackPanel Height="30">
+                    <TextBlock Text="{Binding Title}" Margin="5,0"/>
+                    <TextBlock Text="{Binding Musician}" Margin="5,0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="1">
+                <Button Margin="10,0" FontSize="30" Background="Transparent"
+                        Command="{Binding MovePreviousCommand}">
+                    <Image Height="40" Width="40" Source="pack://application:,,,/Properties/SkipBack.png"/>
+                </Button>
+                <Button Margin="10,5" Background="Transparent"
+                        Command="{Binding PlayCommand}">
+                    <Image Height="50" Width="50" Source="{Binding PlayButtonImage}"/>
+                </Button>
+                <Button Margin="10,0" Background="Transparent"
+                        Command="{Binding MoveNextCommand}">
+                    <Image Height="40" Width="40" Source="pack://application:,,,/Properties/SkipForward.png"/>
+                </Button>
+                <Button Margin="10,0" Background="Transparent" Command="{Binding ChangePlayModeCommand}">
+                    <Image Height="17" Width="17" Source="{Binding PlayMode, Converter={StaticResource pmtis}}"/>
+                </Button>
+            </StackPanel>
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="1" Grid.Column="2"
+                       LastChildFill="False">
+                <Button x:Name="playlistButton" Margin="10,0" Background="Transparent"
+                        DockPanel.Dock="Right" Click="PlaylistButtonClick">
+                    <Image Height="17" Width="17" Source="pack://application:,,,/Properties/Playlist.png"/>
+                </Button>
+                <Button x:Name="volumeButton" Background="Transparent"
+                        DockPanel.Dock="Right">
+                    <StackPanel>
+                        <ui:PopupEx x:Name="p"
+                               PlacementTarget="{Binding ElementName=volumeButton}"
+                               StaysOpen="True"
+                               Placement="Top" 
+                               HorizontalAlignment="Center"
+                               AllowsTransparency="True"
+                               PopupAnimation="Fade"
+                               HorizontalOffset="-7">
+                            <i:Interaction.Behaviors>
+                                <b:PopupButtonBehaviour TargetButton="{Binding ElementName=volumeButton}" />
+                            </i:Interaction.Behaviors>
+                            <Border Background="WhiteSmoke" BorderBrush="DimGray" BorderThickness="1" CornerRadius="5">
+                                <StackPanel>
+                                    <Slider x:Name="volumeSlider"
+                                            Margin="7"
+                                            Orientation="Vertical"
+                                            Height="150" 
+                                            Background="DimGray" 
+                                            Foreground="DarkGray"
+                                            Value="{Binding Volume, Converter={StaticResource vc}}">
+                                    </Slider>
+                                    <TextBlock HorizontalAlignment="Center" 
+                                               FontSize="12"
+                                               Foreground="Black"
+                                               Margin="5" Text="{Binding ElementName=volumeSlider, Path=Value, Converter={StaticResource vvts}}"/>
+                                </StackPanel>
+                            </Border>
+                        </ui:PopupEx>
+                        <Image Height="17" Width="17" Source="{Binding ElementName=volumeSlider, Path=Value, Converter={StaticResource vvtis}}"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+        </Grid>
+        <ui:SplitView Grid.ColumnSpan="3"
+                      OpenPaneLength="250"
+                      CompactPaneLength="45"
+                      DisplayMode="CompactInline"
+                      DockPanel.Dock="Top">
+            <ui:SplitView.Content>
+                <Grid>
+                    <Separator HorizontalAlignment="Left" Margin="0,0" Width="{Binding Source={RelativeSource AncestorType=Window}, Path=Height}">
+                        <Separator.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Separator.LayoutTransform>
+                    </Separator>
+                    <ContentControl Content="{Binding CurrentViewModel}" HorizontalAlignment="Center">
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type vm:MusicViewModel}">
+                                <local:Music />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type vm:AlbumViewModel}">
+                                <local:Album />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type vm:MusicianViewModel}">
+                                <local:Musician />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type vm:PlaylistViewModel}">
+                                <local:Playlist />
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                            Background="WhiteSmoke" BorderBrush="DimGray" BorderThickness="1" CornerRadius="5"
+                            x:Name="playlistBorder" Visibility="Collapsed">
+                        <StackPanel Margin="2">
+                            <TextBlock Text="Playlist" FontWeight="Light" FontSize="20" Margin="10" HorizontalAlignment="Left"/>
+                            <ListBox ItemsSource="{Binding Playlist}"
+                                     SelectionMode="Single"
+                                     VirtualizingPanel.IsVirtualizing="False"
+                                     Height="250"
+                                     AlternationCount="10000">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding PlayFromListCommand}"
+                                                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=SelectedIndex}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="-5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="125"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Margin="3,0">
+                                                <TextBlock Text="{Binding Name}" FontSize="12" Margin="0,2"/>
+                                                <TextBlock Text="{Binding Musician}" FontSize="10" Foreground="DimGray" Margin="0,2"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="3,0" HorizontalAlignment="Right" Grid.Column="1">
+                                                <TextBlock HorizontalAlignment="Right" 
+                                                           Margin="0,2" 
+                                                           FontSize="10" Foreground="DimGray"
+                                                           Text="{Binding Time, StringFormat=mm\\:ss}" />
+                                                <Button Content="x"
+                                                        FontFamily="10" Foreground="DimGray"
+                                                        Background="Transparent"
+                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.RemoveFromListCommand}"
+                                                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=(ItemsControl.AlternationIndex)}">
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ui:SplitView.Content>
+            <ui:SplitView.Pane>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <ui:SimpleStackPanel>
+                        <StackPanel WindowChrome.IsHitTestVisibleInChrome="True"
+                                    Orientation="Horizontal">
+                            <Button Background="Transparent"
+                                 Margin="7,7">
+                                <Image Width="20" Height="20" Source="pack://application:,,,/Properties/Search.png"/>
+                            </Button>
+                            <TextBox Margin="7,7" MinWidth="150" MaxWidth="150">
+                                <i:Interaction.Triggers>
+                                <i:DataTrigger
+                                Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
+                                Value="True">
+                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=TextBox}}"
+                                                            PropertyName="Visibility"
+                                                            Value="Visible"/>
+                                </i:DataTrigger>
+                                <i:DataTrigger
+                                Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
+                                Value="False">
+                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=TextBox}}"
+                                                            PropertyName="Visibility" 
+                                                            Value="Hidden"/>
+                                </i:DataTrigger>
+                            </i:Interaction.Triggers>
+                            </TextBox>
+                        </StackPanel>
+                        <ListBox ItemsSource="{Binding Tabs}">
+                            <i:Interaction.Behaviors>
+                                <b:NavigatorListBehaviour/>
+                            </i:Interaction.Behaviors>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="20" Height="20" Source="{Binding Path}" Margin="4,5" />
+                                        <TextBlock Text="{Binding View}" Margin="7,5"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ui:SimpleStackPanel>
+                    <Button Grid.Row="1" 
+                            VerticalAlignment="Center"
+                            Margin="0,0,0,5"
+                            Width="45"
+                            Height="45"
+                            Background="Transparent">
+                        <Image Height="20" Width="20" Source="pack://application:,,,/Properties/Scale.png"/>
+                        <i:Interaction.Behaviors>
+                            <b:ScaleButtonBehaviour Target="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}}"/>
+                        </i:Interaction.Behaviors>
+                    </Button>
+                </Grid>
+            </ui:SplitView.Pane>
+        </ui:SplitView>
+    </DockPanel>
+</Window>
