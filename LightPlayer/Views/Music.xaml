@@ -42,7 +42,7 @@
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick"
                               Command="{Binding PlayCommand}"
-                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=SelectedItem}"/>
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=SelectedValue}"/>
             </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Title" Width="4*" >

@@ -79,7 +79,7 @@
                            Text="{Binding Length, StringFormat=mm\\:ss}"
                            VerticalAlignment="Center"
                            Margin="0,0,10,5"/>
-                <Slider Margin="5,0,5,5" Value="{Binding Progress}"
+                <Slider Margin="5,0,5,5" Value="{Binding Progress, FallbackValue=0, TargetNullValue=0}"
                         IsEnabled="{Binding IsPlayable}"
                         DockPanel.Dock="Bottom"
                         Foreground="DimGray"
@@ -274,16 +274,16 @@
                                 </i:Interaction.Behaviors>
                                 <i:Interaction.Triggers>
                                 <i:DataTrigger
-                                Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
-                                Value="True">
-                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=TextBox}}"
+                                               Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
+                                               Value="True">
+                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                             PropertyName="Visibility"
                                                             Value="Visible"/>
                                 </i:DataTrigger>
                                 <i:DataTrigger
-                                Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
-                                Value="False">
-                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=TextBox}}"
+                                               Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
+                                               Value="False">
+                                    <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                             PropertyName="Visibility" 
                                                             Value="Hidden"/>
                                 </i:DataTrigger>
