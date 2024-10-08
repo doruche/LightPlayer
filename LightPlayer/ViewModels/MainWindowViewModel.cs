@@ -16,7 +16,9 @@ using System.Windows.Media.Imaging;
 
 namespace LightPlayer.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableRecipient, IRecipient<ValueChangedMessage<Song>>
+    public partial class MainWindowViewModel : ObservableRecipient,
+                                               IRecipient<ValueChangedMessage<Song>>,
+                                               IRecipient<ValueChangedMessage<ObservableCollection<Song>>>
     {
         private readonly NavigationService navigationService;
 
@@ -27,7 +29,16 @@ namespace LightPlayer.ViewModels
         private readonly IGetFileService getFileService;
 
         [ObservableProperty]
+        private ObservableCollection<Song> songsSource;
+
+        [ObservableProperty]
+        private List<Song> filterSongs;
+
+        [ObservableProperty]
         private ViewModelBase? currentViewModel;
+
+        [ObservableProperty]
+        private string? filterText;
 
         private Song? currentSong;
 
@@ -138,26 +149,7 @@ namespace LightPlayer.ViewModels
             };
         }
 
-        private BitmapSource GetBitmapSource(byte[] b)
-        {
-            using (MemoryStream stream = new MemoryStream(b))
-            {
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
 
-                // This is important: the image should be loaded on setting the StreamSource property, afterwards the stream will be closed
-                bi.CacheOption = BitmapCacheOption.OnLoad;
-                bi.DecodePixelWidth = 160;
-
-                // Set this to 160 to get exactly 160x160 image
-                // Comment it out to retain original aspect ratio having the image width 160 and auto calculated image height
-                bi.DecodePixelHeight = 160;
-
-                bi.StreamSource = stream;
-                bi.EndInit();
-                return bi;
-            }
-        }
 
         private void UpdateInfo()
         {
@@ -177,6 +169,28 @@ namespace LightPlayer.ViewModels
                 Length = null;
                 Image = null;
             }
+    
+            BitmapSource GetBitmapSource(byte[] b)
+            {
+                using (MemoryStream stream = new MemoryStream(b))
+                {
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+
+                    // This is important: the image should be loaded on setting the StreamSource property, afterwards the stream will be closed
+                    bi.CacheOption = BitmapCacheOption.OnLoad;
+                    bi.DecodePixelWidth = 160;
+
+                    // Set this to 160 to get exactly 160x160 image
+                    // Comment it out to retain original aspect ratio having the image width 160 and auto calculated image height
+                    bi.DecodePixelHeight = 160;
+
+                    bi.StreamSource = stream;
+                    bi.EndInit();
+                    return bi;
+                }
+            }
+
         }
 
         [RelayCommand(CanExecute =nameof(IsPlayable))]
@@ -250,6 +264,7 @@ namespace LightPlayer.ViewModels
             playMusicService.InsertAndPlay(message.Value);
         }
 
+        public void Receive(ValueChangedMessage<ObservableCollection<Song>> message) => SongsSource = message.Value;
 
         [RelayCommand]
         private void SliderMouseLeftButtonDown()
@@ -263,6 +278,17 @@ namespace LightPlayer.ViewModels
             Position = Progress / 10 * Length;
             playMusicService.Position = Position;
             timer.Start();
+        }
+
+        [RelayCommand]
+        private void Search(bool isPaneOpen)
+        {
+            if (!isPaneOpen)
+                WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>("ToOpen"));
+            else
+            {
+                navigationService.GoToSearchPage(FilterText);
+            }
         }
     }
 

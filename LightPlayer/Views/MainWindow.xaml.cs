@@ -1,27 +1,23 @@
-﻿using LightPlayer.Behaviours;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using LightPlayer.Behaviours;
 using LightPlayer.ViewModels;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace LightPlayer.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IRecipient<ValueChangedMessage<string>>
     {
         public MainWindow(MainWindowViewModel vm)
         {
             InitializeComponent();
             this.DataContext = vm;
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         private void PlaylistButtonClick(object sender, RoutedEventArgs e)
@@ -31,5 +27,12 @@ namespace LightPlayer.Views
             else
                 playlistBorder.Visibility = Visibility.Visible;
         }
+
+        public void Receive(ValueChangedMessage<string> message)
+        {
+            if (message.Value == "ToOpen")
+                this.splitView.IsPaneOpen = true;
+        }
+
     }
 }

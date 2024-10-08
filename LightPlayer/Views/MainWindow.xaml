@@ -163,14 +163,15 @@
                 </Button>
             </DockPanel>
         </Grid>
-        <ui:SplitView Grid.ColumnSpan="3"
+        <ui:SplitView x:Name="splitView"
+                      Grid.ColumnSpan="3"
                       OpenPaneLength="250"
                       CompactPaneLength="45"
                       DisplayMode="CompactInline"
                       DockPanel.Dock="Top">
             <ui:SplitView.Content>
                 <Grid>
-                    <Separator HorizontalAlignment="Left" Margin="0,0" Width="{Binding Source={RelativeSource AncestorType=Window}, Path=Height}">
+                    <Separator HorizontalAlignment="Left" Margin="0,0">
                         <Separator.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </Separator.LayoutTransform>
@@ -188,6 +189,9 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type vm:PlaylistViewModel}">
                                 <local:Playlist />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type vm:SearchPageViewModel}">
+                                <local:SearchPage />
                             </DataTemplate>
                         </ContentControl.Resources>
                     </ContentControl>
@@ -248,10 +252,26 @@
                         <StackPanel WindowChrome.IsHitTestVisibleInChrome="True"
                                     Orientation="Horizontal">
                             <Button Background="Transparent"
-                                 Margin="7,7">
+                                    Margin="7,7" 
+                                    Command="{Binding SearchCommand}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:ChangePropertyAction TargetObject="{Binding ElementName=tabListBox}" PropertyName="SelectedIndex" Value="-1"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Image Width="20" Height="20" Source="pack://application:,,,/Properties/Search.png"/>
                             </Button>
-                            <TextBox Margin="7,7" MinWidth="150" MaxWidth="150">
+                            <ComboBox Margin="7,7" MinWidth="150" MaxWidth="150" 
+                                      DisplayMemberPath="Name" StaysOpenOnEdit="True"
+                                      IsEditable="True" IsTextSearchEnabled="False"
+                                      Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                                <i:Interaction.Behaviors>
+                                    <b:SearchBoxBehaviour 
+                                        FilterText="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                        SongsSource="{Binding SongsSource}" 
+                                        SelectedIndex="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}, Path=SelectedIndex, Mode=TwoWay}"/>
+                                </i:Interaction.Behaviors>
                                 <i:Interaction.Triggers>
                                 <i:DataTrigger
                                 Binding="{Binding RelativeSource={RelativeSource AncestorType=ui:SplitView}, Path=IsPaneOpen}"
@@ -268,9 +288,10 @@
                                                             Value="Hidden"/>
                                 </i:DataTrigger>
                             </i:Interaction.Triggers>
-                            </TextBox>
+                            </ComboBox>
                         </StackPanel>
-                        <ListBox ItemsSource="{Binding Tabs}">
+                        <ListBox ItemsSource="{Binding Tabs}"
+                                 x:Name="tabListBox">
                             <i:Interaction.Behaviors>
                                 <b:NavigatorListBehaviour/>
                             </i:Interaction.Behaviors>

@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace LightPlayer.Views
 {
-    public partial class TabView : ObservableObject
+    public struct TabView
     {
-        public string View { get; set; }
+        public readonly string View { get; init; }
 
-        [ObservableProperty]
-        private string path;
+        public string Path { get; private set; }
 
         public TabView(string view)
         {

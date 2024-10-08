@@ -61,4 +61,8 @@
     <Resource Include="Properties\Volume.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\CustomControls\" />
+  </ItemGroup>
+
 </Project>

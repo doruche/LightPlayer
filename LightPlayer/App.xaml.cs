@@ -38,6 +38,8 @@ namespace LightPlayer
             services.AddSingleton<MusicianViewModel>();
             services.AddSingleton<Playlist>();
             services.AddSingleton<PlaylistViewModel>();
+            services.AddTransient<SearchPage>();
+            services.AddTransient<SearchPageViewModel>();
 
             return services.BuildServiceProvider();
         }

@@ -1,5 +1,6 @@
 ﻿using LightPlayer.Services;
 using LightPlayer.ViewModels;
+using LightPlayer.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xaml.Behaviors;
 using System;
@@ -15,7 +16,6 @@ namespace LightPlayer.Behaviours
     internal class NavigatorListBehaviour : Behavior<ListBox>
     {
         private NavigationService navigationService;
-        private string? currentView;
         private ListBox listBox;
 
         protected override void OnAttached()
@@ -26,20 +26,10 @@ namespace LightPlayer.Behaviours
         }
         private void SelectionChangedHandeler(object sender, SelectionChangedEventArgs e)
         {
-            var view = listBox.SelectedItem.ToString();
-            if (listBox.SelectedItem.ToString() != currentView)
-            {
-                if (view == "Music")
-                    navigationService.NavigateTo<MusicViewModel>();
-                if (view == "Album")
-                    navigationService.NavigateTo<AlbumViewModel>();
-                if (view == "Musician")
-                    navigationService.NavigateTo<MusicianViewModel>();
-                if (view == "Playlist")
-                    navigationService.NavigateTo<PlaylistViewModel>();
-
-            }
-            currentView = view!;
+            if (listBox.SelectedIndex == -1)
+                return;
+            var view = (TabView)listBox.SelectedItem;
+            navigationService.NavigateTo(view);
         }
     }
 }

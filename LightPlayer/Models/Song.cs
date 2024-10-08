@@ -9,6 +9,25 @@ namespace LightPlayer.Models
 {
     public partial class Song : ObservableObject
     {
+        public static bool IsRelated(Song song, string filter)
+        {
+            if (string.IsNullOrEmpty(filter))
+                return false;
+
+            var a = song.Name.Contains(filter);
+            var b = song.Musician?.Contains(filter);
+            var c = song.Album?.Contains(filter);
+
+            if (b.HasValue && c.HasValue)
+                return a || b.Value || c.Value;
+            else if (b.HasValue)
+                return a || b.Value;
+            else if (c.HasValue)
+                return a || c.Value;
+            else
+                return a;
+        }
+
         public string Path {  get; set; }
 
         [ObservableProperty]

@@ -45,9 +45,10 @@ namespace LightPlayer.Models
                 path,
                 song.Tag.Title,
                 song.Properties.Duration,
-                song.Tag.FirstPerformer,
+                string.Join(", ", song.Tag.Performers),
                 song.Tag.Album));
-            UpdateMusician(song.Tag.FirstPerformer, path);
+            foreach(var musician in song.Tag.Performers)
+                UpdateMusician(musician, path);
             if (song.Tag.Pictures.Length > 0)
                 UpdateAlbum(song.Tag.Album, path);
             else

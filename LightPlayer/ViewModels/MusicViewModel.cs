@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace LightPlayer.ViewModels
@@ -34,6 +35,7 @@ namespace LightPlayer.ViewModels
             this.playMusicService = playMusicService;
 
             Songs = new ObservableCollection<Song>(musicDBService.GetAllSongs());
+            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<ObservableCollection<Song>>(songs));
 
             Songs.CollectionChanged += (_, _) =>
             {
