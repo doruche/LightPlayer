@@ -19,7 +19,7 @@
         <Separator DockPanel.Dock="Top" Foreground="Silver" Margin="50,10"/>
         <ListBox DockPanel.Dock="Top"
                  ItemsSource="{Binding Albums}"
-                 Margin="50,10"
+                 Margin="40,10"
                  Background="Transparent"
                  ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
@@ -89,7 +89,7 @@
         </ListBox>
         <TextBlock Text="No albums." Foreground="DimGray" FontSize="14"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Margin="35,0,35,0"
+                   Margin="35,0,35,8"
                    Visibility="{Binding Albums, Converter={StaticResource istv}}"/>
     </DockPanel>
 </UserControl>

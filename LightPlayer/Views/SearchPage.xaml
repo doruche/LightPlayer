@@ -15,16 +15,17 @@
     </UserControl.Resources>
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" FontSize="36" Margin="30,25" FontWeight="Light"
-                   Text="{Binding FilterText, StringFormat={}ResultsOf{0}, Mode=OneWay}"/>
+                   Text="{Binding FilterText, StringFormat={}Results Of {0}, Mode=OneWay}"/>
         <Separator DockPanel.Dock="Top" Foreground="Silver" Margin="50,10"/>
         <DataGrid  DockPanel.Dock="Top"
+                   x:Name="dataGrid"
                    ItemsSource="{Binding Results}" 
                    Margin="30,0"
                    AutoGenerateColumns="False"
                    IsReadOnly="True"
                    SelectionMode="Single"
                    CanUserResizeColumns="False"
-                   Visibility="{Binding IsEmpty, Converter={StaticResource btvc}}">
+                   Visibility="{Binding IsEmpty, Converter={StaticResource btvc}, Mode=OneWay}">
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick"
                               Command="{Binding PlayCommand}"
@@ -53,9 +54,8 @@
             </DataGrid.Columns>
         </DataGrid>
         <TextBlock Text="No results." Foreground="DimGray" FontSize="14"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Margin="0,0,0,20"
-                   Visibility="{Binding IsNotEmpty, Converter={StaticResource btvc}}"/>
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Margin="35,10,35,0"
+                   Visibility="{Binding IsNotEmpty, Converter={StaticResource btvc}, Mode=OneWay}"/>
     </DockPanel>
 </UserControl>

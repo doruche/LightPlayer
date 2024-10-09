@@ -8,10 +8,6 @@ using LightPlayer.Views;
 using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.IO.Pipes;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
 namespace LightPlayer.ViewModels
@@ -286,9 +282,7 @@ namespace LightPlayer.ViewModels
             if (!isPaneOpen)
                 WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>("ToOpen"));
             else
-            {
                 navigationService.GoToSearchPage(FilterText);
-            }
         }
     }
 

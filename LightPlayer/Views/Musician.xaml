@@ -17,7 +17,9 @@
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="Musicians" FontSize="36" Margin="30,25" FontWeight="Light"/>
         <Separator DockPanel.Dock="Top" Foreground="Silver" Margin="50,10"/>
-        <ListBox ItemsSource="{Binding Musicians}" Margin="40,10" Background="Transparent"
+        <ListBox DockPanel.Dock="Top"
+                 ItemsSource="{Binding Musicians}"
+                 Margin="40,10" Background="Transparent"
                  ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -87,7 +89,7 @@
         </ListBox>
         <TextBlock Text="No musicians." Foreground="DimGray" FontSize="14"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Margin="0,0,35,0"
+                   Margin="35,0,35,8"
                    Visibility="{Binding Musicians, Converter={StaticResource istv}}"/>
     </DockPanel>
 </UserControl>

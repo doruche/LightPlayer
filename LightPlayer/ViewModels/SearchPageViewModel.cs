@@ -40,7 +40,6 @@ namespace LightPlayer.ViewModels
             Results = new(musicDBService.GetAllSongs().Where(s => Song.IsRelated(s, FilterText!)));
             IsEmpty = Results.Count == 0;
             IsNotEmpty = !IsEmpty;
-            
         }
 
         [RelayCommand]
