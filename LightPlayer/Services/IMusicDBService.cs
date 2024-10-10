@@ -13,6 +13,8 @@ namespace LightPlayer.Services
 
         public bool RemoveSong(string path);
 
+        public void Initiate();
+
         public IEnumerable<Song> GetAllSongs();
 
         public Song GetSong(string path);

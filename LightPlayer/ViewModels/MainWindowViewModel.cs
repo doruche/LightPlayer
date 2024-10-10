@@ -97,8 +97,7 @@ namespace LightPlayer.ViewModels
         {
             new("Music"),
             new("Musician"),
-            new("Album"),
-            new("Playlist"),
+            new("Album")
         };
 
         public MainWindowViewModel(NavigationService navigationService,
@@ -113,6 +112,8 @@ namespace LightPlayer.ViewModels
 
             this.IsActive = true;
             this.PlayMode = ViewModels.PlayMode.OrderPlay;
+
+            musicDBService.Initiate();
 
             navigationService.CurrentViewModelChanged += () => CurrentViewModel = navigationService.CurrentViewModel;
             navigationService.NavigateTo<MusicViewModel>();
@@ -143,6 +144,7 @@ namespace LightPlayer.ViewModels
                     timer.Stop();
                 }
             };
+
         }
 
 

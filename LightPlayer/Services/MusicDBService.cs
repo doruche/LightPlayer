@@ -13,6 +13,8 @@ namespace LightPlayer.Services
 
         public bool RemoveSong(string path) => MusicDB.Instance.Value.RemoveSong(path);
 
+        public void Initiate() => MusicDB.Instance.Value.Initiate();
+
         public IEnumerable<Song> GetAllSongs() => MusicDB.Instance.Value.GetAllSongs();
 
         public Song GetSong(string path) => MusicDB.Instance.Value.GetSong(path);

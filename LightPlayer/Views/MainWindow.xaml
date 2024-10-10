@@ -11,7 +11,8 @@
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:LightPlayer.ViewModels"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Title="MainWindow" Height="700" Width="1000"
+        Title="MainWindow" MinHeight="700" MinWidth="1000"
+        Height="700" Width="1000"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         x:Name="mainWindow">
     <Window.Style>
@@ -104,20 +105,66 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="1">
-                <Button Margin="10,0" FontSize="30" Background="Transparent"
-                        Command="{Binding MovePreviousCommand}">
-                    <Image Height="40" Width="40" Source="pack://application:,,,/Properties/SkipBack.png"/>
-                </Button>
-                <Button Margin="10,5" Background="Transparent"
-                        Command="{Binding PlayCommand}">
-                    <Image Height="50" Width="50" Source="{Binding PlayButtonImage}"/>
-                </Button>
-                <Button Margin="10,0" Background="Transparent"
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+                <Grid Margin="10,5">
+                    <Image IsEnabled="{Binding ElementName=preButton, Path=IsEnabled}" Height="40" Width="40" Source="pack://application:,,,/Properties/SkipBack.png"/>
+                    <Button x:Name="preButton" Margin="10,0" FontSize="30" Background="Transparent"
+                            Command="{Binding MovePreviousCommand}"
+                            Height="50" Width="50">
+                        <i:Interaction.Triggers>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="False">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="0"/>
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="True">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="1"/>
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </Grid>
+                <Grid Margin="10,5">
+                    <Image IsEnabled="{Binding ElementName=playButton, Path=IsEnabled, Mode=OneWay}" Height="50" Width="50" Source="{Binding PlayButtonImage}"/>
+                    <Button x:Name="playButton" Height="50" Width="50" Background="Transparent"
+                            Command="{Binding PlayCommand}">
+                        <i:Interaction.Triggers>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="False">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="0"/>
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="True">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="1"/>
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </Grid>
+                <Grid Margin="10,5">
+                    <Image IsEnabled="{Binding ElementName=preButton, Path=IsEnabled}" Height="40" Width="40" Source="pack://application:,,,/Properties/SkipForward.png"/>
+                    <Button Margin="10,0" Background="Transparent" Width="50" Height="50"
                         Command="{Binding MoveNextCommand}">
-                    <Image Height="40" Width="40" Source="pack://application:,,,/Properties/SkipForward.png"/>
-                </Button>
+                        <i:Interaction.Triggers>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="False">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="0"/>
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsEnabled}" Value="True">
+                                <i:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        PropertyName="Opacity" Value="1"/>
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </Grid>
                 <Button Margin="10,0" Background="Transparent" Command="{Binding ChangePlayModeCommand}">
-                    <Image Height="17" Width="17" Source="{Binding PlayMode, Converter={StaticResource pmtis}}"/>
+                        <Image Height="17" Width="17" Source="{Binding PlayMode, Converter={StaticResource pmtis}}"/>
                 </Button>
             </StackPanel>
             <DockPanel VerticalAlignment="Center"
@@ -186,9 +233,6 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type vm:MusicianViewModel}">
                                 <local:Musician />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type vm:PlaylistViewModel}">
-                                <local:Playlist />
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type vm:SearchPageViewModel}">
                                 <local:SearchPage />

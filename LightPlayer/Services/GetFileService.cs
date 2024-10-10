@@ -15,7 +15,8 @@ namespace LightPlayer.Services
             var ofd = new OpenFileDialog()
             {
                 Filter = ".mp3|*.mp3|.flac|*.flac",
-                Multiselect = true
+                Multiselect = true,
+                Title = "Select"
             };
             if (ofd.ShowDialog() == true)
             {
@@ -24,7 +25,6 @@ namespace LightPlayer.Services
             }
             else
             {
-                MessageBox.Show("No files.");
                 paths = Array.Empty<string>();
                 return false;
             }
